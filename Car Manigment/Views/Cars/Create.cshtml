@@ -1,0 +1,47 @@
+﻿@model Car_Manigment.ViewModels.Cars.CarCreateViewModel
+
+@{
+    ViewData["Title"] = "Create Car";
+}
+
+<h2>Create Car</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Brand"></label>
+        <input asp-for="Brand" class="form-control" />
+        <span asp-validation-for="Brand" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Model"></label>
+        <input asp-for="Model" class="form-control" />
+        <span asp-validation-for="Model" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Year"></label>
+        <input asp-for="Year" class="form-control" />
+        <span asp-validation-for="Year" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="VinNumber"></label>
+        <input asp-for="VinNumber" class="form-control" />
+        <span asp-validation-for="VinNumber" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="OwnerName"></label>
+        <input asp-for="OwnerName" class="form-control" />
+        <span asp-validation-for="OwnerName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="OwnerPhone"></label>
+        <input asp-for="OwnerPhone" class="form-control" />
+        <span asp-validation-for="OwnerPhone" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

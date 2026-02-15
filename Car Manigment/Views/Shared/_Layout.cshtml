@@ -26,6 +26,28 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+
+                        <!-- Cars navigation -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="carsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Cars
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="carsDropdown">
+                                <li><a class="dropdown-item" asp-controller="Cars" asp-action="Index">All Cars</a></li>
+                                <li><a class="dropdown-item" asp-controller="Cars" asp-action="Create">Create Car</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Service Orders navigation -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="ordersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Service Orders
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="ordersDropdown">
+                                <li><a class="dropdown-item" asp-controller="ServiceOrders" asp-action="Index">All Service Orders</a></li>
+                                <li><a class="dropdown-item" asp-controller="ServiceOrders" asp-action="Create">Create Service Order</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>

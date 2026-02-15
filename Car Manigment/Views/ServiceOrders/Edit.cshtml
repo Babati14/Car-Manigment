@@ -1,0 +1,42 @@
+﻿@model Car_Manigment.ViewModels.ServiceOrders.ServiceOrderEditViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Edit Service Order";
+}
+
+<h2>Edit Service Order</h2>
+
+<form asp-action="Edit" method="post">
+    <input asp-for="Id" type="hidden" />
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <input asp-for="Description" class="form-control" />
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="EstimatedPrice"></label>
+        <input asp-for="EstimatedPrice" class="form-control" />
+        <span asp-validation-for="EstimatedPrice" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Status"></label>
+        <select asp-for="Status" class="form-control">
+            <option value="Pending">Pending</option>
+            <option value="InProgress">In Progress</option>
+            <option value="Completed">Completed</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="CarId"></label>
+        <select asp-for="CarId" asp-items="(SelectList)ViewBag.Cars" class="form-control"></select>
+        <span asp-validation-for="CarId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

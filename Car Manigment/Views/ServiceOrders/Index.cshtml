@@ -1,0 +1,31 @@
+﻿@model IEnumerable<Car_Manigment.ViewModels.ServiceOrders.ServiceOrderListViewModel>
+
+@{
+    ViewData["Title"] = "Service Orders";
+}
+
+<h2>Service Orders</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create Service Order</a>
+</p>
+
+<table class="table">
+    <thead><tr><th>Car</th><th>Description</th><th>Price</th><th>Status</th><th>Created</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var o in Model)
+    {
+        <tr>
+            <td>@o.CarDisplay</td>
+            <td>@o.Description</td>
+            <td>@o.EstimatedPrice.ToString("C")</td>
+            <td>@o.Status</td>
+            <td>@o.CreatedOn.ToString("g")</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@o.Id">Edit</a> |
+                <a asp-action="Delete" asp-route-id="@o.Id">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
