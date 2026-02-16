@@ -1,0 +1,22 @@
+@model Car_Manigment.ViewModels.Cars.CarDetailsViewModel
+
+@{
+    ViewData["Title"] = "Delete Car";
+}
+
+<h2>Delete Car</h2>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Brand @Model.Model</h5>
+        <p class="text-muted">Year: @Model.Year</p>
+        <p>VIN: @Model.VinNumber</p>
+        <p>Owner: @Model.OwnerName (@Model.OwnerPhone)</p>
+
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>

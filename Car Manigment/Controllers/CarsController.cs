@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Car_Manigment.Controllers
 {
@@ -145,6 +146,65 @@ namespace Car_Manigment.Controllers
 
             if (car == null) return NotFound();
             return View(car);
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var car = await _db.Cars
+                .Include(c => c.ServiceOrders)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (car == null) return NotFound();
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Challenge();
+
+            if (car.OwnerId != currentUser.Id) return Forbid();
+
+            var vm = new CarDetailsViewModel
+            {
+                Id = car.Id,
+                Brand = car.Brand,
+                Model = car.Model,
+                Year = car.Year,
+                VinNumber = car.VinNumber,
+                OwnerName = car.OwnerName,
+                OwnerPhone = car.OwnerPhone,
+                ServiceOrders = car.ServiceOrders.Select(so => new ServiceOrderListViewModel
+                {
+                    Id = so.Id,
+                    Description = so.Description,
+                    EstimatedPrice = so.EstimatedPrice,
+                    CreatedOn = so.CreatedOn,
+                    Status = so.Status.ToString(),
+                    CarId = so.CarId,
+                    CarDisplay = car.Brand + " " + car.Model
+                })
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var car = await _db.Cars
+                .Include(c => c.ServiceOrders)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (car == null) return RedirectToAction(nameof(Index));
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Challenge();
+
+            if (car.OwnerId != currentUser.Id) return Forbid();
+
+            _db.Cars.Remove(car);
+            await _db.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Car deleted successfully.";
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

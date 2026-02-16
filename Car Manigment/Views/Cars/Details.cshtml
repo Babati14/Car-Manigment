@@ -47,3 +47,8 @@ else
 {
     <p>No service orders.</p>
 }
+
+<div class="mt-4">
+    <a asp-action="Edit" asp-controller="Cars" asp-route-id="@Model.Id" class="btn btn-secondary">Edit</a>
+    <a asp-action="Delete" asp-controller="Cars" asp-route-id="@Model.Id" class="btn btn-danger ms-2">Delete Car</a>
+</div>
