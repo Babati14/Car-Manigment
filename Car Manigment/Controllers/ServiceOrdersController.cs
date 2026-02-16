@@ -50,7 +50,13 @@ namespace Car_Manigment.Controllers
         {
             var userId = _userManager.GetUserId(User);
             // only show cars that belong to current user
-            ViewBag.Cars = new SelectList(_db.Cars.Where(c => c.OwnerId == userId).OrderBy(c => c.Brand).ThenBy(c => c.Model).ToList(), "Id", "VinNumber");
+            var cars = _db.Cars
+                .Where(c => c.OwnerId == userId)
+                .OrderBy(c => c.Brand)
+                .ThenBy(c => c.Model)
+                .Select(c => new { c.Id, Display = c.Id + " - " + c.Brand + " " + c.Model })
+                .ToList();
+            ViewBag.Cars = new SelectList(cars, "Id", "Display");
             return View();
         }
 
@@ -61,7 +67,13 @@ namespace Car_Manigment.Controllers
             if (!ModelState.IsValid)
             {
                 var userId = _userManager.GetUserId(User);
-                ViewBag.Cars = new SelectList(_db.Cars.Where(c => c.OwnerId == userId).OrderBy(c => c.Brand).ThenBy(c => c.Model).ToList(), "Id", "VinNumber", model.CarId);
+                var cars = _db.Cars
+                    .Where(c => c.OwnerId == userId)
+                    .OrderBy(c => c.Brand)
+                    .ThenBy(c => c.Model)
+                    .Select(c => new { c.Id, Display = c.Id + " - " + c.Brand + " " + c.Model })
+                    .ToList();
+                ViewBag.Cars = new SelectList(cars, "Id", "Display", model.CarId);
                 return View(model);
             }
 
@@ -73,7 +85,13 @@ namespace Car_Manigment.Controllers
             if (car == null || car.OwnerId != currentUser.Id)
             {
                 ModelState.AddModelError(nameof(model.CarId), "Invalid car selection.");
-                ViewBag.Cars = new SelectList(_db.Cars.Where(c => c.OwnerId == _userManager.GetUserId(User)).OrderBy(c => c.Brand).ThenBy(c => c.Model).ToList(), "Id", "VinNumber", model.CarId);
+                var cars = _db.Cars
+                    .Where(c => c.OwnerId == _userManager.GetUserId(User))
+                    .OrderBy(c => c.Brand)
+                    .ThenBy(c => c.Model)
+                    .Select(c => new { c.Id, Display = c.Id + " - " + c.Brand + " " + c.Model })
+                    .ToList();
+                ViewBag.Cars = new SelectList(cars, "Id", "Display", model.CarId);
                 return View(model);
             }
 
@@ -113,7 +131,13 @@ namespace Car_Manigment.Controllers
                 CarId = so.CarId
             };
 
-            ViewBag.Cars = new SelectList(_db.Cars.Where(c => c.OwnerId == _userManager.GetUserId(User)).OrderBy(c => c.Brand).ThenBy(c => c.Model).ToList(), "Id", "VinNumber", vm.CarId);
+            var carsForEdit = _db.Cars
+                .Where(c => c.OwnerId == _userManager.GetUserId(User))
+                .OrderBy(c => c.Brand)
+                .ThenBy(c => c.Model)
+                .Select(c => new { c.Id, Display = c.Id + " - " + c.Brand + " " + c.Model })
+                .ToList();
+            ViewBag.Cars = new SelectList(carsForEdit, "Id", "Display", vm.CarId);
             return View(vm);
         }
 
@@ -124,7 +148,13 @@ namespace Car_Manigment.Controllers
             if (!ModelState.IsValid)
             {
                 var userId = _userManager.GetUserId(User);
-                ViewBag.Cars = new SelectList(_db.Cars.Where(c => c.OwnerId == userId).OrderBy(c => c.Brand).ThenBy(c => c.Model).ToList(), "Id", "VinNumber", model.CarId);
+                var cars = _db.Cars
+                    .Where(c => c.OwnerId == userId)
+                    .OrderBy(c => c.Brand)
+                    .ThenBy(c => c.Model)
+                    .Select(c => new { c.Id, Display = c.Id + " - " + c.Brand + " " + c.Model })
+                    .ToList();
+                ViewBag.Cars = new SelectList(cars, "Id", "Display", model.CarId);
                 return View(model);
             }
 

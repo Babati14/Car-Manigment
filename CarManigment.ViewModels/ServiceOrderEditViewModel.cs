@@ -1,10 +1,13 @@
 using System.ComponentModel.DataAnnotations;
-using Car_Manigment.Common;
+using Car_Manigment.Models;
+using CarManigment.Common;
 
 namespace Car_Manigment.ViewModels.ServiceOrders
 {
-    public class ServiceOrderCreateViewModel
+    public class ServiceOrderEditViewModel
     {
+        public int Id { get; set; }
+
         [Required(ErrorMessage = ValidationConstants.RequiredFieldError)]
         [StringLength(
             ValidationConstants.ServiceDescriptionMaxLength,
@@ -14,6 +17,8 @@ namespace Car_Manigment.ViewModels.ServiceOrders
 
         [Range(0.01, double.MaxValue, ErrorMessage = ValidationConstants.InvalidRangeError)]
         public decimal EstimatedPrice { get; set; }
+
+        public ServiceStatus Status { get; set; }
 
         [Required(ErrorMessage = ValidationConstants.RequiredFieldError)]
         public int CarId { get; set; }

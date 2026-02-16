@@ -1,3 +1,14 @@
 <Solution>
-  <Project Path="Car Manigment/Car Manigment.csproj" />
+  <Folder Name="/Data/">
+    <Project Path="CarManigment.Data.Models/CarManigment.Data.Models.csproj" Id="2e11fbf2-a765-402e-b4e2-b8d6b1d36e81" />
+    <Project Path="CarManigment.Data/CarManigment.Data.csproj" Id="6f4e70dc-d26c-4eec-8fc3-882c4c991787" />
+  </Folder>
+  <Folder Name="/Services/">
+    <Project Path="CarManigment.Services.Core/CarManigment.Services.Core.csproj" Id="5924e788-e1bc-4f04-aeda-c3874d580ccc" />
+  </Folder>
+  <Folder Name="/ViewModels/">
+    <Project Path="CarManigment.ViewModels/CarManigment.ViewModels.csproj" Id="0d9b7da1-d43d-445f-ac49-e5d9ad280785" />
+  </Folder>
+  <Project Path="Car Manigment/CarManigment.csproj" />
+  <Project Path="CarManigment.Common/CarManigment.Common.csproj" />
 </Solution>

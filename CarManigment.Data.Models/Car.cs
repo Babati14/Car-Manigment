@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using static Car_Manigment.Common.ValidationConstants;
+using static CarManigment.Common.ValidationConstants;
 using Microsoft.AspNetCore.Identity;
+
 namespace Car_Manigment.Models
 {
     public class Car
