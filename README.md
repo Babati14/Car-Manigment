@@ -4,16 +4,16 @@ A comprehensive web-based Car Management System built with ASP.NET Core MVC that
 
 ## 📋 Table of Contents
 
-- [About the Project](#about-the-project)
-- [Key Features](#key-features)
-- [Technologies Used](#technologies-used)
-- [Project Architecture](#project-architecture)
-- [Prerequisites](#prerequisites)
-- [Installation & Setup](#installation--setup)
-- [Database Setup](#database-setup)
-- [Usage](#usage)
-- [Project Structure](#project-structure)
-- [Contributing](#contributing)
+- [About the Project]
+- [Key Features]
+- [Technologies Used]
+- [Project Architecture]
+- [Prerequisites]
+- [Installation & Setup]
+- [Database Setup]
+- [Usage]
+- [Project Structure]
+- [Contributing]
 
 ## 📖 About the Project
 
