@@ -257,25 +257,7 @@ This project is available as open source. Please check the repository for licens
 
 **Babati14**
 - GitHub: [@Babati14](https://github.com/Babati14)
-
-## 🐛 Known Issues & Future Enhancements
-
-### Potential Improvements:
-- Add search and filtering for cars and service orders
-- Implement service order comments/notes
-- Add email notifications for service status changes
-- Include file upload for service receipts/invoices
-- Add dashboard with statistics and charts
-- Implement export functionality (PDF/Excel)
-- Add multi-language support
-- Include service history timeline view
-
-## 📞 Support
-
-If you encounter any issues or have questions:
-- Open an issue on [GitHub Issues](https://github.com/Babati14/Car-Manigment/issues)
-- Check existing issues for solutions
-
+  
 ---
 
 **Happy Car Managing! 🚗**
