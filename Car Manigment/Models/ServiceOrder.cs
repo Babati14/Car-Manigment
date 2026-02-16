@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using Car_Manigment.Common;
+using Microsoft.AspNetCore.Identity;
 
 namespace Car_Manigment.Models
 {
@@ -26,6 +27,10 @@ namespace Car_Manigment.Models
 
         [Required(ErrorMessage = ValidationConstants.RequiredFieldError)]
         public int CarId { get; set; }
-        public Car Car { get; set; }
+        public Car Car { get; set; } = null!;
+
+        // Link to user who created the service order
+        public string? CreatedById { get; set; }
+        public IdentityUser? CreatedBy { get; set; }
     }
 }

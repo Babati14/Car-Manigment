@@ -25,6 +25,20 @@ namespace Car_Manigment.Data
                 .WithOne(so => so.Car)
                 .HasForeignKey(so => so.CarId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Car.Owner (IdentityUser) relationship
+            modelBuilder.Entity<Car>()
+                .HasOne<IdentityUser>(c => c.Owner)
+                .WithMany()
+                .HasForeignKey(c => c.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // ServiceOrder.CreatedBy (IdentityUser) relationship
+            modelBuilder.Entity<ServiceOrder>()
+                .HasOne<IdentityUser>(so => so.CreatedBy)
+                .WithMany()
+                .HasForeignKey(so => so.CreatedById)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

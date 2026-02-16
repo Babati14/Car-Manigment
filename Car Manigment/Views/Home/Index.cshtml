@@ -1,8 +1,61 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Car_Manigment.ViewModels.Cars
+@model IEnumerable<CarListViewModel>
+
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (!User.Identity?.IsAuthenticated ?? true)
+{
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 text-center">
+            <div class="p-5 bg-white rounded-3 shadow-sm">
+                <h1 class="display-5">Welcome to Car Management</h1>
+                <p class="lead text-muted">This site lets you register vehicles and track maintenance/service orders. Please log in or register to use these features.</p>
+                <p class="mt-4">
+                    <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary btn-lg me-2">Log in</a>
+                    <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-primary btn-lg">Register</a>
+                </p>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h1 class="display-4">Welcome to Car Management</h1>
+            <p class="lead text-muted">Register your vehicles, create service orders and keep track of maintenance.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <h2>Your Cars</h2>
+            @if (!Model?.Any() ?? true)
+            {
+                <div class="alert alert-info">No cars found. Go to <a asp-controller="Cars" asp-action="Create">Create Car</a> to add your first vehicle.</div>
+            }
+            else
+            {
+                <div class="row g-3">
+                    @foreach (var car in Model)
+                    {
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">@car.Brand @car.Model</h5>
+                                    <p class="text-muted mb-2">Year: <strong>@car.Year</strong></p>
+                                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                                        <a asp-controller="Cars" asp-action="Details" asp-route-id="@car.Id" class="btn btn-sm btn-outline-primary">Details</a>
+                                        <span class="text-muted small">ID: @car.Id</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}

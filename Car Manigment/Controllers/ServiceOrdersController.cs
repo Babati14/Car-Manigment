@@ -6,18 +6,31 @@ using Car_Manigment.Models;
 using Car_Manigment.ViewModels.ServiceOrders;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace Car_Manigment.Controllers
 {
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public class ServiceOrdersController : Controller
     {
         private readonly ApplicationDbContext _db;
-        public ServiceOrdersController(ApplicationDbContext db) => _db = db;
+        private readonly UserManager<IdentityUser> _userManager;
+        public ServiceOrdersController(ApplicationDbContext db, UserManager<IdentityUser> userManager)
+        {
+            _db = db;
+            _userManager = userManager;
+        }
 
         public async Task<IActionResult> Index()
         {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Challenge();
+
+            var userId = currentUser.Id;
+
             var orders = await _db.ServiceOrders
                 .Include(so => so.Car)
+                .Where(so => so.Car.OwnerId == userId)
                 .Select(so => new ServiceOrderListViewModel
                 {
                     Id = so.Id,
@@ -35,7 +48,9 @@ namespace Car_Manigment.Controllers
 
         public IActionResult Create()
         {
-            ViewBag.Cars = new SelectList(_db.Cars.OrderBy(c => c.Brand).ThenBy(c => c.Model).ToList(), "Id", "VinNumber");
+            var userId = _userManager.GetUserId(User);
+            // only show cars that belong to current user
+            ViewBag.Cars = new SelectList(_db.Cars.Where(c => c.OwnerId == userId).OrderBy(c => c.Brand).ThenBy(c => c.Model).ToList(), "Id", "VinNumber");
             return View();
         }
 
@@ -45,7 +60,20 @@ namespace Car_Manigment.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Cars = new SelectList(_db.Cars.OrderBy(c => c.Brand).ThenBy(c => c.Model).ToList(), "Id", "VinNumber", model.CarId);
+                var userId = _userManager.GetUserId(User);
+                ViewBag.Cars = new SelectList(_db.Cars.Where(c => c.OwnerId == userId).OrderBy(c => c.Brand).ThenBy(c => c.Model).ToList(), "Id", "VinNumber", model.CarId);
+                return View(model);
+            }
+
+            // ensure the selected car belongs to the current user
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Challenge();
+
+            var car = await _db.Cars.FindAsync(model.CarId);
+            if (car == null || car.OwnerId != currentUser.Id)
+            {
+                ModelState.AddModelError(nameof(model.CarId), "Invalid car selection.");
+                ViewBag.Cars = new SelectList(_db.Cars.Where(c => c.OwnerId == _userManager.GetUserId(User)).OrderBy(c => c.Brand).ThenBy(c => c.Model).ToList(), "Id", "VinNumber", model.CarId);
                 return View(model);
             }
 
@@ -56,6 +84,11 @@ namespace Car_Manigment.Controllers
                 CarId = model.CarId
             };
 
+            if (currentUser != null)
+            {
+                so.CreatedById = currentUser.Id;
+            }
+
             _db.ServiceOrders.Add(so);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -63,8 +96,13 @@ namespace Car_Manigment.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            var so = await _db.ServiceOrders.FindAsync(id);
+            var so = await _db.ServiceOrders.Include(s => s.Car).FirstOrDefaultAsync(s => s.Id == id);
             if (so == null) return NotFound();
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Challenge();
+
+            if (so.Car.OwnerId != currentUser.Id) return Forbid();
 
             var vm = new ServiceOrderEditViewModel
             {
@@ -75,7 +113,7 @@ namespace Car_Manigment.Controllers
                 CarId = so.CarId
             };
 
-            ViewBag.Cars = new SelectList(_db.Cars.OrderBy(c => c.Brand).ThenBy(c => c.Model).ToList(), "Id", "VinNumber", vm.CarId);
+            ViewBag.Cars = new SelectList(_db.Cars.Where(c => c.OwnerId == _userManager.GetUserId(User)).OrderBy(c => c.Brand).ThenBy(c => c.Model).ToList(), "Id", "VinNumber", vm.CarId);
             return View(vm);
         }
 
@@ -85,12 +123,18 @@ namespace Car_Manigment.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Cars = new SelectList(_db.Cars.OrderBy(c => c.Brand).ThenBy(c => c.Model).ToList(), "Id", "VinNumber", model.CarId);
+                var userId = _userManager.GetUserId(User);
+                ViewBag.Cars = new SelectList(_db.Cars.Where(c => c.OwnerId == userId).OrderBy(c => c.Brand).ThenBy(c => c.Model).ToList(), "Id", "VinNumber", model.CarId);
                 return View(model);
             }
 
-            var so = await _db.ServiceOrders.FindAsync(model.Id);
+            var so = await _db.ServiceOrders.Include(s => s.Car).FirstOrDefaultAsync(s => s.Id == model.Id);
             if (so == null) return NotFound();
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Challenge();
+
+            if (so.Car.OwnerId != currentUser.Id) return Forbid();
 
             so.Description = model.Description;
             so.EstimatedPrice = model.EstimatedPrice;
@@ -106,6 +150,12 @@ namespace Car_Manigment.Controllers
         {
             var so = await _db.ServiceOrders.Include(s => s.Car).FirstOrDefaultAsync(s => s.Id == id);
             if (so == null) return NotFound();
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            if (so.Car.OwnerId != user.Id) return Forbid();
+
             return View(so);
         }
 
@@ -113,9 +163,14 @@ namespace Car_Manigment.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var so = await _db.ServiceOrders.FindAsync(id);
+            var so = await _db.ServiceOrders.Include(s => s.Car).FirstOrDefaultAsync(s => s.Id == id);
             if (so != null)
             {
+                var currentUser = await _userManager.GetUserAsync(User);
+                if (currentUser == null) return Challenge();
+
+                if (so.Car.OwnerId != currentUser.Id) return Forbid();
+
                 _db.ServiceOrders.Remove(so);
                 await _db.SaveChangesAsync();
             }

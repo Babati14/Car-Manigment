@@ -29,3 +29,62 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* --- Simple global styles for a cleaner look --- */
+body {
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #f8fbff;
+  color: #222;
+}
+
+.container main {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+h1, h2, h3 {
+  color: #0b3d91;
+}
+
+.navbar-brand {
+  font-weight: 600;
+  color: #0b3d91 !important;
+}
+
+.nav-link {
+  color: #222 !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(11,61,145,0.03);
+}
+.table-hover tbody tr:hover {
+  background-color: rgba(11,61,145,0.06);
+}
+
+.card {
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.btn-primary {
+  background-color: #0b66d1;
+  border-color: #0958b8;
+}
+
+.alert {
+  border-radius: 0.5rem;
+}
+
+/* Forms */
+.form-control {
+  border-radius: 0.35rem;
+}
+
+footer.footer {
+  padding: 1rem 0;
+  background: transparent;
+}
+
+/* small helper */
+.text-muted { color: #6c757d !important; }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using static Car_Manigment.Common.ValidationConstants;
+using Microsoft.AspNetCore.Identity;
 namespace Car_Manigment.Models
 {
     public class Car
@@ -50,5 +51,9 @@ namespace Car_Manigment.Models
         public string OwnerPhone { get; set; } = string.Empty;
 
         public ICollection<ServiceOrder> ServiceOrders { get; set; } = new List<ServiceOrder>();
+
+        // Link to the user who owns/created the car
+        public string? OwnerId { get; set; }
+        public IdentityUser? Owner { get; set; }
     }
 }

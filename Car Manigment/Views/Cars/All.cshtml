@@ -1,29 +1,15 @@
-﻿@model IEnumerable<Car_Manigment.ViewModels.Cars.CarListViewModel>
+@model IEnumerable<Car_Manigment.ViewModels.Cars.CarListViewModel>
 
 @{
-    ViewData["Title"] = "Cars";
+    ViewData["Title"] = "All Cars";
     var count = (Model ?? Enumerable.Empty<Car_Manigment.ViewModels.Cars.CarListViewModel>()).Count();
 }
 
-<h2>Cars (@count)</h2>
-
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
-<p>
-    <a asp-action="Create" asp-controller="Cars" class="btn btn-primary">Create New Car</a>
-</p>
-
-@* Debug info removed *@
+<h2>All Cars (@count)</h2>
 
 @if (!Model.Any())
 {
-    <div class="alert alert-info">No cars found. Add one using the "Create New Car" button.</div>
+    <div class="alert alert-info">No cars available.</div>
 }
 else
 {

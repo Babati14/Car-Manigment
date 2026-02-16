@@ -8,23 +8,33 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System;
+using Microsoft.AspNetCore.Identity;
 
 namespace Car_Manigment.Controllers
 {
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public class CarsController : Controller
     {
         private readonly ApplicationDbContext _db;
         private readonly ILogger<CarsController> _logger;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public CarsController(ApplicationDbContext db, ILogger<CarsController> logger)
+        public CarsController(ApplicationDbContext db, ILogger<CarsController> logger, UserManager<IdentityUser> userManager)
         {
             _db = db;
             _logger = logger;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
         {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            var userId = user.Id;
+
             var cars = await _db.Cars
+                .Where(c => c.OwnerId == userId)
                 .OrderByDescending(c => c.Id)
                 .Select(c => new CarListViewModel
                 {
@@ -34,6 +44,8 @@ namespace Car_Manigment.Controllers
                     Year = c.Year
                 })
                 .ToListAsync();
+
+            
 
             ViewBag.CarsCount = cars.Count;
             return View(cars);
@@ -72,6 +84,16 @@ namespace Car_Manigment.Controllers
                 OwnerPhone = inputModel.OwnerPhone
             };
 
+            // If user is authenticated, set OwnerId so the car appears in My Cars
+            if (User?.Identity?.IsAuthenticated == true)
+            {
+                var currentUser = await _userManager.GetUserAsync(User);
+                if (currentUser != null)
+                {
+                    car.OwnerId = currentUser.Id;
+                }
+            }
+
             try
             {
                 _db.Cars.Add(car);
@@ -87,28 +109,18 @@ namespace Car_Manigment.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> All()
-        {
-            var cars = await _db.Cars
-                .OrderByDescending(c => c.Id)
-                .Select(c => new CarListViewModel
-                {
-                    Id = c.Id,
-                    Brand = c.Brand,
-                    Model = c.Model,
-                    Year = c.Year
-                })
-                .ToListAsync();
-
-            return View(cars);
-        }
+        // Removed public All() to prevent listing all cars
 
         public async Task<IActionResult> Details(int id)
         {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Challenge();
+
+            var userId = currentUser.Id;
+
             var car = await _db.Cars
                 .Include(c => c.ServiceOrders)
-                .Where(c => c.Id == id)
+                .Where(c => c.Id == id && c.OwnerId == userId)
                 .Select(c => new CarDetailsViewModel
                 {
                     Id = c.Id,
