@@ -64,7 +64,6 @@ namespace Car_Manigment.Controllers
                 return View(inputModel);
             }
 
-            // Prevent duplicate VIN entries
             var existing = await _db.Cars
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.VinNumber == inputModel.VinNumber);
@@ -85,7 +84,6 @@ namespace Car_Manigment.Controllers
                 OwnerPhone = inputModel.OwnerPhone
             };
 
-            // If user is authenticated, set OwnerId so the car appears in My Cars
             if (User?.Identity?.IsAuthenticated == true)
             {
                 var currentUser = await _userManager.GetUserAsync(User);
@@ -110,7 +108,6 @@ namespace Car_Manigment.Controllers
             }
         }
 
-        // Removed public All() to prevent listing all cars
 
         public async Task<IActionResult> Details(int id)
         {
@@ -205,6 +202,77 @@ namespace Car_Manigment.Controllers
             TempData["SuccessMessage"] = "Car deleted successfully.";
 
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var car = await _db.Cars.FindAsync(id);
+            if (car == null) return NotFound();
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Challenge();
+
+            if (car.OwnerId != currentUser.Id) return Forbid();
+
+            var vm = new CarEditViewModel
+            {
+                Id = car.Id,
+                Brand = car.Brand,
+                Model = car.Model,
+                Year = car.Year,
+                VinNumber = car.VinNumber,
+                OwnerName = car.OwnerName,
+                OwnerPhone = car.OwnerPhone
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(CarEditViewModel inputModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("Edit Car model state invalid: {Errors}", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return View(inputModel);
+            }
+
+            var car = await _db.Cars.FindAsync(inputModel.Id);
+            if (car == null) return NotFound();
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Challenge();
+
+            if (car.OwnerId != currentUser.Id) return Forbid();
+
+            var existing = await _db.Cars.AsNoTracking().FirstOrDefaultAsync(c => c.VinNumber == inputModel.VinNumber && c.Id != inputModel.Id);
+            if (existing != null)
+            {
+                ModelState.AddModelError(nameof(inputModel.VinNumber), "A car with this VIN already exists.");
+                return View(inputModel);
+            }
+
+            car.Brand = inputModel.Brand;
+            car.Model = inputModel.Model;
+            car.Year = inputModel.Year;
+            car.VinNumber = inputModel.VinNumber;
+            car.OwnerName = inputModel.OwnerName;
+            car.OwnerPhone = inputModel.OwnerPhone;
+
+            try
+            {
+                _db.Cars.Update(car);
+                await _db.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Car updated successfully.";
+                return RedirectToAction(nameof(Details), new { id = car.Id });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating car {CarId}", car.Id);
+                ModelState.AddModelError(string.Empty, "An error occurred while updating the car. See logs for details.");
+                return View(inputModel);
+            }
         }
     }
 }
