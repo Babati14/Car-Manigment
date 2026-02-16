@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Car_Manigment.Common;
-
+using static Car_Manigment.Common.ValidationConstants;
 namespace Car_Manigment.Models
 {
     public class Car
@@ -9,46 +8,46 @@ namespace Car_Manigment.Models
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = ValidationConstants.RequiredFieldError)]
+        [Required(ErrorMessage = RequiredFieldError)]
         [StringLength(
-            ValidationConstants.CarBrandMaxLength,
-            MinimumLength = ValidationConstants.CarBrandMinLength,
-            ErrorMessage = ValidationConstants.InvalidLengthError)]
-        public string Brand { get; set; }
+            CarBrandMaxLength,
+            MinimumLength = CarBrandMinLength,
+            ErrorMessage = InvalidLengthError)]
+        public string Brand { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = ValidationConstants.RequiredFieldError)]
+        [Required(ErrorMessage = RequiredFieldError)]
         [StringLength(
-            ValidationConstants.CarModelMaxLength,
-            MinimumLength = ValidationConstants.CarModelMinLength,
-            ErrorMessage = ValidationConstants.InvalidLengthError)]
-        public string Model { get; set; }
+            CarModelMaxLength,
+            MinimumLength = CarModelMinLength,
+            ErrorMessage = InvalidLengthError)]
+        public string Model { get; set; } = string.Empty;
 
         [Range(
-            ValidationConstants.CarMinYear,
-            ValidationConstants.CarMaxYear,
-            ErrorMessage = ValidationConstants.InvalidRangeError)]
+            CarMinYear,
+            CarMaxYear,
+            ErrorMessage = InvalidRangeError)]
         public int Year { get; set; }
 
-        [Required(ErrorMessage = ValidationConstants.RequiredFieldError)]
+        [Required(ErrorMessage = RequiredFieldError)]
         [StringLength(
-            ValidationConstants.VinLength,
-            MinimumLength = ValidationConstants.VinLength,
-            ErrorMessage = ValidationConstants.InvalidVinError)]
-        public string VinNumber { get; set; }
+            VinLength,
+            MinimumLength = VinLength,
+            ErrorMessage = InvalidVinError)]
+        public string VinNumber { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = ValidationConstants.RequiredFieldError)]
+        [Required(ErrorMessage = RequiredFieldError)]
         [StringLength(
-            ValidationConstants.OwnerNameMaxLength,
-            MinimumLength = ValidationConstants.OwnerNameMinLength,
-            ErrorMessage = ValidationConstants.InvalidLengthError)]
-        public string OwnerName { get; set; }
+            OwnerNameMaxLength,
+            MinimumLength = OwnerNameMinLength,
+            ErrorMessage = InvalidLengthError)]
+        public string OwnerName { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = ValidationConstants.RequiredFieldError)]
+        [Required(ErrorMessage = RequiredFieldError)]
         [StringLength(
-            ValidationConstants.PhoneNumberMaxLength,
-            MinimumLength = ValidationConstants.PhoneNumberMinLength,
-            ErrorMessage = ValidationConstants.InvalidLengthError)]
-        public string OwnerPhone { get; set; }
+            PhoneNumberMaxLength,
+            MinimumLength = PhoneNumberMinLength,
+            ErrorMessage = InvalidLengthError)]
+        public string OwnerPhone { get; set; } = string.Empty;
 
         public ICollection<ServiceOrder> ServiceOrders { get; set; } = new List<ServiceOrder>();
     }

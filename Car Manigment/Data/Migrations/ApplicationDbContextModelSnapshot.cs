@@ -60,7 +60,7 @@ namespace Car_Manigment.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cars");
+                    b.ToTable("Cars", (string)null);
                 });
 
             modelBuilder.Entity("Car_Manigment.Models.ServiceOrder", b =>
@@ -92,7 +92,7 @@ namespace Car_Manigment.Data.Migrations
 
                     b.HasIndex("CarId");
 
-                    b.ToTable("ServiceOrders");
+                    b.ToTable("ServiceOrders", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

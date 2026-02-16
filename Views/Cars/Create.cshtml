@@ -1,4 +1,4 @@
-﻿@model Car_Manigment.ViewModels.Cars.CarCreateViewModel
+@model Car_Manigment.ViewModels.Cars.CarCreateViewModel
 
 @{
     ViewData["Title"] = "Create Car";
@@ -24,7 +24,7 @@
 
     <div class="form-group">
         <label asp-for="Year"></label>
-        <input asp-for="Year" class="form-control" type="number" min="1980" max="2100" />
+        <input asp-for="Year" type="number" min="1980" max="2100" class="form-control" />
         <span asp-validation-for="Year" class="text-danger"></span>
     </div>
 

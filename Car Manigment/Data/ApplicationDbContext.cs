@@ -12,8 +12,8 @@ namespace Car_Manigment.Data
         {
         }
 
-        public DbSet<Car> Cars { get; set; } = null!;
-        public DbSet<ServiceOrder> ServiceOrders { get; set; } = null!;
+        public virtual DbSet<Car> Cars { get; set; } = null!;
+        public virtual DbSet<ServiceOrder> ServiceOrders { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

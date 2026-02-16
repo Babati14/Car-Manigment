@@ -6,17 +6,92 @@ using Car_Manigment.ViewModels.Cars;
 using Car_Manigment.ViewModels.ServiceOrders;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace Car_Manigment.Controllers
 {
     public class CarsController : Controller
     {
         private readonly ApplicationDbContext _db;
-        public CarsController(ApplicationDbContext db) => _db = db;
+        private readonly ILogger<CarsController> _logger;
+
+        public CarsController(ApplicationDbContext db, ILogger<CarsController> logger)
+        {
+            _db = db;
+            _logger = logger;
+        }
 
         public async Task<IActionResult> Index()
         {
             var cars = await _db.Cars
+                .OrderByDescending(c => c.Id)
+                .Select(c => new CarListViewModel
+                {
+                    Id = c.Id,
+                    Brand = c.Brand,
+                    Model = c.Model,
+                    Year = c.Year
+                })
+                .ToListAsync();
+
+            ViewBag.CarsCount = cars.Count;
+            return View(cars);
+        }
+
+        [HttpGet]
+        public IActionResult Create() => View();
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CarCreateViewModel inputModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(inputModel);
+            }
+
+            // Prevent duplicate VIN entries
+            var existing = await _db.Cars
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.VinNumber == inputModel.VinNumber);
+
+            if (existing != null)
+            {
+                ModelState.AddModelError(nameof(inputModel.VinNumber), "A car with this VIN already exists.");
+                return View(inputModel);
+            }
+
+            var car = new Car
+            {
+                Brand = inputModel.Brand,
+                Model = inputModel.Model,
+                Year = inputModel.Year,
+                VinNumber = inputModel.VinNumber,
+                OwnerName = inputModel.OwnerName,
+                OwnerPhone = inputModel.OwnerPhone
+            };
+
+            try
+            {
+                _db.Cars.Add(car);
+                await _db.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Car added successfully (Id: {car.Id}).";
+                return RedirectToAction(nameof(Details), new { id = car.Id });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error saving car");
+                ModelState.AddModelError("", "An unexpected error occurred while saving. See logs for details.");
+                return View(inputModel);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> All()
+        {
+            var cars = await _db.Cars
+                .OrderByDescending(c => c.Id)
                 .Select(c => new CarListViewModel
                 {
                     Id = c.Id,
@@ -27,29 +102,6 @@ namespace Car_Manigment.Controllers
                 .ToListAsync();
 
             return View(cars);
-        }
-
-        public IActionResult Create() => View();
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CarCreateViewModel model)
-        {
-            if (!ModelState.IsValid) return View(model);
-
-            var car = new Car
-            {
-                Brand = model.Brand,
-                Model = model.Model,
-                Year = model.Year,
-                VinNumber = model.VinNumber,
-                OwnerName = model.OwnerName,
-                OwnerPhone = model.OwnerPhone
-            };
-
-            _db.Cars.Add(car);
-            await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Details(int id)
