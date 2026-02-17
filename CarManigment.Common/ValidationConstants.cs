@@ -26,20 +26,6 @@ namespace CarManigment.Common
 
         public const int ServiceDescriptionMaxLength = 500;
 
-        public const int MinEstimatedDurationHours = 1;
-        public const int MaxEstimatedDurationHours = 48;
-
-        public const int MinDailyCapacity = 1;
-        public const int MaxDailyCapacity = 50;
-
-        //ServiceType
-        public const int ServiceTypeNameMinLength = 3;
-        public const int ServiceTypeNameMaxLength = 50;
-
-        //ServiceBooking
-        public const int CustomerNameMinLength = 2;
-        public const int CustomerNameMaxLength = 100;
-
         //Common Error Messages
         public const string RequiredFieldError =
             "This field is required.";

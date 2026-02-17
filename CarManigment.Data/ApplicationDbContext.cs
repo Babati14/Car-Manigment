@@ -19,21 +19,18 @@ namespace Car_Manigment.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configure relationships and constraints
             modelBuilder.Entity<Car>()
                 .HasMany(c => c.ServiceOrders)
                 .WithOne(so => so.Car)
                 .HasForeignKey(so => so.CarId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Car.Owner (IdentityUser) relationship
             modelBuilder.Entity<Car>()
                 .HasOne<IdentityUser>(c => c.Owner)
                 .WithMany()
                 .HasForeignKey(c => c.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // ServiceOrder.CreatedBy (IdentityUser) relationship
             modelBuilder.Entity<ServiceOrder>()
                 .HasOne<IdentityUser>(so => so.CreatedBy)
                 .WithMany()

@@ -9,11 +9,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace Car_Manigment.Controllers
 {
-    [Microsoft.AspNetCore.Authorization.Authorize]
     public class CarsController : Controller
     {
         private readonly ApplicationDbContext _db;

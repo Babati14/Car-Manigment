@@ -53,7 +53,6 @@ namespace Car_Manigment.Models
 
         public ICollection<ServiceOrder> ServiceOrders { get; set; } = new List<ServiceOrder>();
 
-        // Link to the user who owns/created the car
         public string? OwnerId { get; set; }
         public IdentityUser? Owner { get; set; }
     }

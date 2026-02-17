@@ -29,7 +29,6 @@ namespace Car_Manigment.Models
         public int CarId { get; set; }
         public Car Car { get; set; } = null!;
 
-        // Link to user who created the service order
         public string? CreatedById { get; set; }
         public IdentityUser? CreatedBy { get; set; }
     }
