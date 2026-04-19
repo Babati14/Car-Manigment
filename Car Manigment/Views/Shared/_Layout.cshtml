@@ -46,6 +46,13 @@
                                 <li><a class="dropdown-item" asp-controller="ServiceOrders" asp-action="Create">Create Service Order</a></li>
                             </ul>
                         </li>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="Index">Admin Panel</a>
+                            </li>
+                        }
                     </ul>
 
                     <partial name="_LoginPartial" />

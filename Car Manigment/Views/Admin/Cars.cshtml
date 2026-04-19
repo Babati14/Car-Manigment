@@ -1,0 +1,42 @@
+@model IEnumerable<Car_Manigment.ViewModels.Admin.AdminCarViewModel>
+@{
+    ViewData["Title"] = "Manage Cars";
+}
+
+<h1>All Cars</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Brand</th>
+            <th>Model</th>
+            <th>Year</th>
+            <th>VIN</th>
+            <th>Owner</th>
+            <th>Owner Account</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var car in Model)
+        {
+            <tr>
+                <td>@car.Brand</td>
+                <td>@car.Model</td>
+                <td>@car.Year</td>
+                <td>@car.VinNumber</td>
+                <td>@car.OwnerName</td>
+                <td>@(car.OwnerEmail ?? "N/A")</td>
+                <td>
+                    <a asp-action="EditCar" asp-route-id="@car.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <form asp-action="DeleteCar" asp-route-id="@car.Id" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure? This will also delete all service orders for this car.');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">Back to Dashboard</a>
