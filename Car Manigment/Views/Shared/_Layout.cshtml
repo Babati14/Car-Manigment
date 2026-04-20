@@ -47,6 +47,10 @@
                             </ul>
                         </li>
 
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Reports" asp-action="Index">Reports</a>
+                        </li>
+
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">

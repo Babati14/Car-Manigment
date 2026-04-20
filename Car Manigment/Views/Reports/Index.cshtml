@@ -1,0 +1,154 @@
+@model Car_Manigment.ViewModels.Reports.ReportsDashboardViewModel
+@{
+    ViewData["Title"] = "Reports Dashboard";
+}
+
+<h1>Reports Dashboard</h1>
+
+<!-- Summary Cards -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body text-center">
+                <h5 class="card-title">Total Cars</h5>
+                <p class="display-6">@Model.TotalCars</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body text-center">
+                <h5 class="card-title">Service Orders</h5>
+                <p class="display-6">@Model.TotalServiceOrders</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body text-center">
+                <h5 class="card-title">Total Spent</h5>
+                <p class="display-6">@Model.TotalSpent.ToString("C")</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body text-center">
+                <h5 class="card-title">Completed</h5>
+                <p class="display-6">@Model.CompletedOrders</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Order Status Breakdown -->
+<div class="row mt-3">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header"><strong>Orders by Status</strong></div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <span class="badge bg-secondary me-2">Pending</span>
+                    <div class="progress" style="height: 25px;">
+                        @{
+                            var pendingPct = Model.TotalServiceOrders > 0 ? (double)Model.PendingOrders / Model.TotalServiceOrders * 100 : 0;
+                            var inProgressPct = Model.TotalServiceOrders > 0 ? (double)Model.InProgressOrders / Model.TotalServiceOrders * 100 : 0;
+                            var completedPct = Model.TotalServiceOrders > 0 ? (double)Model.CompletedOrders / Model.TotalServiceOrders * 100 : 0;
+                        }
+                        <div class="progress-bar bg-secondary" style="width: @pendingPct.ToString("F0")%">@Model.PendingOrders</div>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <span class="badge bg-info me-2">In Progress</span>
+                    <div class="progress" style="height: 25px;">
+                        <div class="progress-bar bg-info" style="width: @inProgressPct.ToString("F0")%">@Model.InProgressOrders</div>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <span class="badge bg-success me-2">Completed</span>
+                    <div class="progress" style="height: 25px;">
+                        <div class="progress-bar bg-success" style="width: @completedPct.ToString("F0")%">@Model.CompletedOrders</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Spending -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header"><strong>Monthly Spending</strong></div>
+            <div class="card-body">
+                @if (Model.MonthlySpending.Any())
+                {
+                    var maxAmount = Model.MonthlySpending.Max(m => m.Amount);
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Amount</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var month in Model.MonthlySpending)
+                            {
+                                var barWidth = maxAmount > 0 ? (double)month.Amount / (double)maxAmount * 100 : 0;
+                                <tr>
+                                    <td>@month.Month</td>
+                                    <td>@month.Amount.ToString("C")</td>
+                                    <td style="width:50%">
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar bg-primary" style="width: @barWidth.ToString("F0")%"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-muted">No spending data yet.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Per-Car Breakdown -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header"><strong>Service Summary per Car</strong></div>
+            <div class="card-body">
+                @if (Model.CarSummaries.Any())
+                {
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Car</th>
+                                <th>Service Orders</th>
+                                <th>Total Spent</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var car in Model.CarSummaries)
+                            {
+                                <tr>
+                                    <td>@car.CarDisplayName</td>
+                                    <td>@car.ServiceCount</td>
+                                    <td>@car.TotalSpent.ToString("C")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-muted">No cars found.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
