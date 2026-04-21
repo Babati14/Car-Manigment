@@ -1,4 +1,5 @@
 <Solution>
+  <Folder Name="/Car Manigment/" />
   <Folder Name="/Data/">
     <Project Path="CarManigment.Data.Models/CarManigment.Data.Models.csproj" Id="2e11fbf2-a765-402e-b4e2-b8d6b1d36e81" />
     <Project Path="CarManigment.Data/CarManigment.Data.csproj" Id="6f4e70dc-d26c-4eec-8fc3-882c4c991787" />
@@ -11,4 +12,5 @@
   </Folder>
   <Project Path="Car Manigment/CarManigment.csproj" />
   <Project Path="CarManigment.Common/CarManigment.Common.csproj" />
+  <Project Path="CarManigment.Tests/CarManigment.Tests.csproj" />
 </Solution>

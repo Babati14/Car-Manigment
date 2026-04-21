@@ -6,7 +6,6 @@
 <div class="container">
     <div class="row justify-content-center align-items-center" style="min-height: 60vh;">
         <div class="col-lg-8 text-center">
-            <!-- Error Icon -->
             <div class="mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" fill="currentColor" class="bi bi-exclamation-triangle text-danger" viewBox="0 0 16 16">
                     <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.15.15 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.2.2 0 0 1-.054.06.1.1 0 0 1-.066.017H1.146a.1.1 0 0 1-.066-.017.2.2 0 0 1-.054-.06.18.18 0 0 1 .002-.183L7.884 2.073a.15.15 0 0 1 .054-.057m1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767z"/>
@@ -14,18 +13,14 @@
                 </svg>
             </div>
 
-            <!-- Error Code -->
             <h1 class="display-1 fw-bold text-danger">500</h1>
 
-            <!-- Error Title -->
             <h2 class="mb-4">@Model.ErrorTitle</h2>
 
-            <!-- Error Message -->
             <p class="lead text-muted mb-4">
                 @Model.ErrorMessage
             </p>
 
-            <!-- Additional Information -->
             <div class="alert alert-danger" role="alert">
                 <div class="d-flex align-items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-info-circle me-2" viewBox="0 0 16 16">
@@ -39,7 +34,6 @@
                 </div>
             </div>
 
-            <!-- Action Buttons -->
             <div class="d-flex gap-3 justify-content-center mt-4">
                 <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg">
                     <i class="bi bi-house-door me-2"></i>Go to Home
@@ -49,7 +43,6 @@
                 </button>
             </div>
 
-            <!-- What You Can Do -->
             <div class="mt-5">
                 <h5 class="text-muted mb-3">What you can do:</h5>
                 <div class="row g-3 text-start">
@@ -98,7 +91,6 @@
                 </div>
             </div>
 
-            <!-- Request ID for support -->
             @if (Model.ShowRequestId)
             {
                 <div class="mt-5 p-4 bg-light rounded">
@@ -118,10 +110,8 @@
 
 @section Scripts {
     <script>
-        // Auto-focus on the "Go to Home" button
         document.querySelector('.btn-primary').focus();
 
-        // Add a subtle animation
         document.addEventListener('DOMContentLoaded', function() {
             const cards = document.querySelectorAll('.card');
             cards.forEach((card, index) => {

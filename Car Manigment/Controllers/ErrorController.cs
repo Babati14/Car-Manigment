@@ -5,7 +5,7 @@ using Car_Manigment.ViewModels;
 
 namespace Car_Manigment.Controllers
 {
-    [AllowAnonymous] // Allow access to error pages without authentication
+    [AllowAnonymous]
     public class ErrorController : Controller
     {
         private readonly ILogger<ErrorController> _logger;
@@ -14,10 +14,6 @@ namespace Car_Manigment.Controllers
         {
             _logger = logger;
         }
-
-        /// <summary>
-        /// Handles 404 Not Found errors
-        /// </summary>
         [Route("Error/404")]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult NotFound()
@@ -40,9 +36,6 @@ namespace Car_Manigment.Controllers
             return View("NotFound", model);
         }
 
-        /// <summary>
-        /// Handles 500 Internal Server Error
-        /// </summary>
         [Route("Error/500")]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult InternalServerError()
@@ -63,9 +56,6 @@ namespace Car_Manigment.Controllers
             return View("InternalServerError", model);
         }
 
-        /// <summary>
-        /// General error handler for other status codes
-        /// </summary>
         [Route("Error/{statusCode}")]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult HandleError(int statusCode)
@@ -86,7 +76,6 @@ namespace Car_Manigment.Controllers
 
             Response.StatusCode = statusCode;
 
-            // Use specific views for common errors, otherwise use generic error view
             return statusCode switch
             {
                 404 => View("NotFound", model),
