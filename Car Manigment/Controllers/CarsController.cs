@@ -36,12 +36,14 @@ namespace Car_Manigment.Controllers
 
             if (!string.IsNullOrWhiteSpace(searchBrand))
             {
-                query = query.Where(c => c.Brand.Contains(searchBrand));
+                var lowerBrand = searchBrand.ToLower();
+                query = query.Where(c => c.Brand.ToLower().Contains(lowerBrand));
             }
 
             if (!string.IsNullOrWhiteSpace(searchModel))
             {
-                query = query.Where(c => c.Model.Contains(searchModel));
+                var lowerModel = searchModel.ToLower();
+                query = query.Where(c => c.Model.ToLower().Contains(lowerModel));
             }
 
             if (searchYear.HasValue)

@@ -31,7 +31,8 @@ namespace Car_Manigment.Controllers
 
             if (!string.IsNullOrWhiteSpace(searchCar))
             {
-                carsQuery = carsQuery.Where(c => c.Brand.Contains(searchCar) || c.Model.Contains(searchCar));
+                var lowerSearch = searchCar.ToLower();
+                carsQuery = carsQuery.Where(c => c.Brand.ToLower().Contains(lowerSearch) || c.Model.ToLower().Contains(lowerSearch));
             }
 
             var cars = await carsQuery
