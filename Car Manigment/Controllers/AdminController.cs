@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Car_Manigment.Data;
 using Car_Manigment.Models;
 using Car_Manigment.ViewModels.Admin;
+using CarManigment.Common;
 
 namespace Car_Manigment.Controllers
 {
@@ -54,6 +55,7 @@ namespace Car_Manigment.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateRouteParameter("id", "Id")]
         public async Task<IActionResult> EditUser(AdminUserViewModel model)
         {
             var user = await _userManager.FindByIdAsync(model.Id);
@@ -112,6 +114,7 @@ namespace Car_Manigment.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateRouteParameter("id", "Id")]
         public async Task<IActionResult> EditCar(Car car)
         {
             if (!ModelState.IsValid) return View(car);
@@ -164,6 +167,7 @@ namespace Car_Manigment.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateRouteParameter("id", "Id")]
         public async Task<IActionResult> EditServiceOrder(ServiceOrder order)
         {
             if (!ModelState.IsValid) return View(order);

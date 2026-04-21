@@ -11,6 +11,7 @@ using System;
 using Microsoft.AspNetCore.Identity;
 using static CarManigment.Common.SecurityHelpers;
 using static CarManigment.Common.ValidationConstants;
+using CarManigment.Common;
 
 namespace Car_Manigment.Controllers
 {
@@ -222,8 +223,13 @@ namespace Car_Manigment.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, [FromForm] int Id)
         {
+            if (id != Id)
+            {
+                return BadRequest("Parameter tampering detected: Route ID does not match form ID.");
+            }
+
             var car = await _db.Cars
                 .Include(c => c.ServiceOrders)
                 .FirstOrDefaultAsync(c => c.Id == id);
@@ -268,6 +274,7 @@ namespace Car_Manigment.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateRouteParameter("id", "Id")]
         public async Task<IActionResult> Edit(CarEditViewModel inputModel)
         {
             if (!ModelState.IsValid)

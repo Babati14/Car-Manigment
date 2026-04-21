@@ -71,24 +71,38 @@ else
     app.UseDeveloperExceptionPage();
 }
 
-// Security Headers
+// Security Headers - XSS and CSRF Protection
 app.Use(async (context, next) =>
 {
-    // Prevent clickjacking
+    // Prevent clickjacking attacks
     context.Response.Headers.Append("X-Frame-Options", "DENY");
 
-    // Prevent MIME type sniffing
+    // Prevent MIME type sniffing attacks
     context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
 
-    // Enable XSS protection
+    // Enable XSS protection in legacy browsers
     context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
 
-    // Content Security Policy
+    // Enhanced Content Security Policy to prevent XSS attacks
+    // Note: 'unsafe-inline' and 'unsafe-eval' are required for Bootstrap, jQuery validation
+    // In production, consider using nonces or hashes for stricter CSP
     context.Response.Headers.Append("Content-Security-Policy", 
-        "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;");
+        "default-src 'self'; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://ajax.aspnetcdn.com; " +
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://ajax.aspnetcdn.com; " +
+        "img-src 'self' data: https:; " +
+        "font-src 'self' https://cdn.jsdelivr.net data:; " +
+        "connect-src 'self'; " +
+        "frame-ancestors 'none'; " +
+        "base-uri 'self'; " +
+        "form-action 'self';");
 
-    // Referrer Policy
+    // Referrer Policy to limit information leakage
     context.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
+
+    // Permissions Policy (formerly Feature Policy)
+    context.Response.Headers.Append("Permissions-Policy", 
+        "geolocation=(), microphone=(), camera=(), payment=()");
 
     await next();
 });

@@ -14,6 +14,7 @@
         <p>Owner: @Model.OwnerName (@Model.OwnerPhone)</p>
 
         <form asp-action="Delete" method="post">
+            @Html.AntiForgeryToken()
             <input type="hidden" asp-for="Id" />
             <button type="submit" class="btn btn-danger">Delete</button>
             <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary ms-2">Cancel</a>

@@ -7,6 +7,7 @@ using Car_Manigment.ViewModels.ServiceOrders;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using CarManigment.Common;
 
 namespace Car_Manigment.Controllers
 {
@@ -143,6 +144,7 @@ namespace Car_Manigment.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateRouteParameter("id", "Id")]
         public async Task<IActionResult> Edit(ServiceOrderEditViewModel model)
         {
             if (!ModelState.IsValid)
@@ -191,8 +193,13 @@ namespace Car_Manigment.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, [FromForm] int Id)
         {
+            if (id != Id)
+            {
+                return BadRequest("Parameter tampering detected: Route ID does not match form ID.");
+            }
+
             var so = await _db.ServiceOrders.Include(s => s.Car).FirstOrDefaultAsync(s => s.Id == id);
             if (so != null)
             {
