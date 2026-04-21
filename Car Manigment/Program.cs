@@ -5,7 +5,20 @@ using Microsoft.AspNetCore.Identity.UI;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+// Add request size limits
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 10 * 1024 * 1024; // 10 MB limit
+    options.ValueLengthLimit = 100 * 1024; // 100 KB per form field
+    options.ValueCountLimit = 1000; // Max 1000 form fields
+});
+
+builder.Services.AddControllersWithViews(options =>
+{
+    // Add automatic ValidateAntiForgeryToken to all POST actions
+    options.Filters.Add(new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute());
+});
+
 builder.Services.AddRazorPages();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -53,6 +66,32 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+else
+{
+    app.UseDeveloperExceptionPage();
+}
+
+// Security Headers
+app.Use(async (context, next) =>
+{
+    // Prevent clickjacking
+    context.Response.Headers.Append("X-Frame-Options", "DENY");
+
+    // Prevent MIME type sniffing
+    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+
+    // Enable XSS protection
+    context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
+
+    // Content Security Policy
+    context.Response.Headers.Append("Content-Security-Policy", 
+        "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;");
+
+    // Referrer Policy
+    context.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
+
+    await next();
+});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

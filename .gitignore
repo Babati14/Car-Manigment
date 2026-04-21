@@ -65,3 +65,5 @@ nunit-*.xml
 /.vs/CopilotSnapshots
 /.vs/Car Manigment/CopilotIndices/18.4.114.215
 /.vs/Car Manigment/CopilotIndices/18.5.39150.21849
+/SECURITY.md
+/SQL-INJECTION-PREVENTION.md

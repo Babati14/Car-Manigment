@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System;
 using Microsoft.AspNetCore.Identity;
+using static CarManigment.Common.SecurityHelpers;
+using static CarManigment.Common.ValidationConstants;
 
 namespace Car_Manigment.Controllers
 {
@@ -31,6 +33,25 @@ namespace Car_Manigment.Controllers
             if (user == null) return Challenge();
 
             var userId = user.Id;
+
+            // Validate and sanitize inputs
+            if (!string.IsNullOrWhiteSpace(searchBrand) && !IsValidInput(searchBrand, 50))
+            {
+                ModelState.AddModelError(nameof(searchBrand), "Invalid search input.");
+                return View(new List<CarListViewModel>());
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchModel) && !IsValidInput(searchModel, 50))
+            {
+                ModelState.AddModelError(nameof(searchModel), "Invalid search input.");
+                return View(new List<CarListViewModel>());
+            }
+
+            if (!IsValidNumericInput(searchYear, CarMinYear, CarMaxYear))
+            {
+                ModelState.AddModelError(nameof(searchYear), "Invalid year range.");
+                return View(new List<CarListViewModel>());
+            }
 
             var query = _db.Cars.Where(c => c.OwnerId == userId);
 

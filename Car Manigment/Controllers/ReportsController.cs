@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Car_Manigment.Data;
 using Car_Manigment.Models;
 using Car_Manigment.ViewModels.Reports;
+using static CarManigment.Common.SecurityHelpers;
 
 namespace Car_Manigment.Controllers
 {
@@ -26,6 +27,13 @@ namespace Car_Manigment.Controllers
             if (user == null) return Challenge();
 
             var userId = user.Id;
+
+            // Validate and sanitize search input
+            if (!string.IsNullOrWhiteSpace(searchCar) && !IsValidInput(searchCar, 100))
+            {
+                ModelState.AddModelError(nameof(searchCar), "Invalid search input.");
+                return View(new ReportsDashboardViewModel());
+            }
 
             var carsQuery = _db.Cars.Where(c => c.OwnerId == userId);
 
