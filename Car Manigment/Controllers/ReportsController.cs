@@ -20,15 +20,21 @@ namespace Car_Manigment.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchCar)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Challenge();
 
             var userId = user.Id;
 
-            var cars = await _db.Cars
-                .Where(c => c.OwnerId == userId)
+            var carsQuery = _db.Cars.Where(c => c.OwnerId == userId);
+
+            if (!string.IsNullOrWhiteSpace(searchCar))
+            {
+                carsQuery = carsQuery.Where(c => c.Brand.Contains(searchCar) || c.Model.Contains(searchCar));
+            }
+
+            var cars = await carsQuery
                 .Include(c => c.ServiceOrders)
                 .ToListAsync();
 
@@ -64,6 +70,7 @@ namespace Car_Manigment.Controllers
                     .ToList()
             };
 
+            ViewBag.SearchCar = searchCar;
             return View(model);
         }
     }
