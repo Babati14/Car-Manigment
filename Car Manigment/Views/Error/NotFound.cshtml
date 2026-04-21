@@ -1,0 +1,85 @@
+@model Car_Manigment.ViewModels.ErrorViewModel
+@{
+    ViewData["Title"] = "404 - Page Not Found";
+}
+
+<div class="container">
+    <div class="row justify-content-center align-items-center" style="min-height: 60vh;">
+        <div class="col-lg-8 text-center">
+            <div class="mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" fill="currentColor" class="bi bi-file-earmark-x text-warning" viewBox="0 0 16 16">
+                    <path d="M6.854 7.146a.5.5 0 1 0-.708.708L7.293 9l-1.147 1.146a.5.5 0 0 0 .708.708L8 9.707l1.146 1.147a.5.5 0 0 0 .708-.708L8.707 9l1.147-1.146a.5.5 0 0 0-.708-.708L8 8.293z"/>
+                    <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                </svg>
+            </div>
+
+            <h1 class="display-1 fw-bold text-warning">404</h1>
+
+            <h2 class="mb-4">@Model.ErrorTitle</h2>
+
+            <p class="lead text-muted mb-4">
+                @Model.ErrorMessage
+            </p>
+
+            @if (!string.IsNullOrEmpty(Model.OriginalPath))
+            {
+                <div class="alert alert-light border" role="alert">
+                    <strong>Requested URL:</strong> <code>@Model.OriginalPath</code>
+                </div>
+            }
+
+            <div class="d-flex gap-3 justify-content-center mt-4">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg">
+                    <i class="bi bi-house-door me-2"></i>Go to Home
+                </a>
+                <button onclick="window.history.back()" class="btn btn-outline-secondary btn-lg">
+                    <i class="bi bi-arrow-left me-2"></i>Go Back
+                </button>
+            </div>
+
+            <div class="mt-5">
+                <h5 class="text-muted mb-3">You might be looking for:</h5>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a asp-controller="Cars" asp-action="Index" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-car-front me-1"></i>My Cars
+                        </a>
+                        <a asp-controller="ServiceOrders" asp-action="Index" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-wrench me-1"></i>Service Orders
+                        </a>
+                        <a asp-controller="Reports" asp-action="Index" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-graph-up me-1"></i>Reports
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                        </a>
+                        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-sm btn-outline-success">
+                            <i class="bi bi-person-plus me-1"></i>Register
+                        </a>
+                    }
+                </div>
+            </div>
+
+            @if (Model.ShowRequestId)
+            {
+                <div class="mt-5">
+                    <p class="text-muted small">
+                        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+                        <br />
+                        <span class="text-muted">Please provide this ID when contacting support.</span>
+                    </p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelector('.btn-primary').focus();
+    </script>
+}

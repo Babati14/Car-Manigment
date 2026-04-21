@@ -61,17 +61,38 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+// Middleware pipeline configuration
+// Order is critical: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/
+
+// 1. HTTPS Redirection (must be early)
+app.UseHttpsRedirection();
+
+// 2. HSTS (production only)
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-else
-{
-    app.UseDeveloperExceptionPage();
-}
 
-// Security Headers - XSS and CSRF Protection
+// 3. Static Files (before error handling so CSS/JS loads on error pages)
+app.UseStaticFiles();
+
+// 4. Routing (must be before authentication)
+app.UseRouting();
+
+// 5. Authentication & Authorization (must be after routing, before endpoints)
+app.UseAuthentication(); 
+app.UseAuthorization();
+
+// 6. Custom Error Pages (after authentication so [AllowAnonymous] works)
+// Configure for all environments - custom pages work in both dev and production
+app.UseExceptionHandler("/Error/500");
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
+// Note: If you need detailed error traces during debugging, temporarily comment out
+// the two lines above and uncomment this:
+// app.UseDeveloperExceptionPage();
+
+// 7. Security Headers - XSS and CSRF Protection
 app.Use(async (context, next) =>
 {
     // Prevent clickjacking attacks
@@ -107,13 +128,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseRouting();
-
-app.UseAuthentication(); 
-app.UseAuthorization();
-
+// 8. Map endpoints
 app.MapStaticAssets();
 
 app.MapControllerRoute(
